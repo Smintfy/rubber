@@ -7,7 +7,7 @@ MAX_BUFFER_SIZE = 1024
 
 
 def get(request)
-  case request
+  case request.path
   when "/"
     request.status(ResponseCode::OK).end
   when ->(path) { path.start_with?("/echo/") }
@@ -28,7 +28,6 @@ loop do
 
   begin
     data = conn.recv(MAX_BUFFER_SIZE).force_encoding("UTF-8")
-
     request = Request.new(data, conn)
 
     case request.method

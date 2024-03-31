@@ -47,7 +47,6 @@ class ResponseHeader
 
   # e.g HTTP/1.1 200 OK
   def to_s
-    puts "#{@version} #{@code} #{ResponseCode.name(@code)}"
     "#{@version} #{@code} #{ResponseCode.name(@code)}"
   end
 end
@@ -79,8 +78,8 @@ class ResponseBody
       []
     else
       [
-        "Content-Type: {#{@content_type}}",
-        "Content-Length: {#{@content.length}}"
+        "Content-Type: #{@content_type}",
+        "Content-Length: #{@content.length}"
       ]
     end
   end

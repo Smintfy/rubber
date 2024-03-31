@@ -17,15 +17,15 @@ class RequestHeader
 
   def initialize(header)
     method, @path, @version = header.split(" ")
-    @method = RequestMethod::method
+    @method = RequestMethod.const_get(method)
   end
 end
 
 
 class Request
-  attr_reader :conn, :raw_data, :data, :header, :response
+  attr_reader :raw_data, :conn, :data, :header, :response
 
-  def initialize(conn, raw_data)
+  def initialize(raw_data, conn)
     @conn = conn
     @raw_data = raw_data
     # split into separate lines for processing
@@ -61,5 +61,26 @@ class Request
   # get the request method
   def method
     @header.method
+  end
+end
+
+class RequestOther
+  attr_reader :raw_data, :data, :header, :response
+
+  def initialize(raw_data)
+    @raw_data = raw_data
+    # split into separate lines for processing
+    @data = @raw_data.split("\r\n")
+    @header = @data.shift
+  end
+
+  def data
+    @data
+  end
+
+  # GET / HTTP/1.1
+  def header
+    method, @path, @version = @header.split(" ")
+    RequestMethod.const_get(method)
   end
 end
