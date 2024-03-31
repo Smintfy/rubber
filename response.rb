@@ -97,12 +97,12 @@ class Response
   # Build the response object
   def to_s
     headers = [@header.to_s] + @body.representation
-    "#{headers.join("\r\n")}\r\n\r\n#{@body}"
+    "#{headers.join("\r\n")}\r\n\r\n#{@body.to_s}"
   end
 
   # Send the response
   def send(conn)
-    conn.write(to_s.encode)
+    conn.send(to_s.encode, 0)
   end
 
   # Add content to the response, update the content type to text plain

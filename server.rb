@@ -38,6 +38,7 @@ loop do
     end
   rescue StandardError
     Response.new(ResponseCode::INTERNAL_SERVER_ERROR).send(conn)
+  ensure
+    conn.close
   end
-
 end
