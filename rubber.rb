@@ -3,16 +3,19 @@ require "./request"
 require "./response"
 
 
+MAX_BUFFER = 1024
+
+
 class Rubber
   def initialize
     @routes = {}
   end
 
-  def get(path, &block)
-    @routes["GET #{path}"] = block
+  def mount(method, path, &block)
+    @routes["#{method} #{path}"] = block
   end
 
-  def start(port)
+  def serve(port)
     socket = TCPServer.new('localhost', port)
     puts "Listening on #{port}"
 
@@ -20,7 +23,7 @@ class Rubber
       conn = socket.accept
 
       begin
-        data = conn.recv(1024).force_encoding("UTF-8")
+        data = conn.recv(MAX_BUFFER).force_encoding("UTF-8")
         request = Request.new(data, conn)
 
         handler = @routes["#{request.method} #{request.path}"]
@@ -36,10 +39,39 @@ class Rubber
 end
 
 
-app = Rubber.new
+# def get(request)
+#   case request.path
+#   when "/"
+#     request.status(ResponseCode::OK).end
+#   when ->(path) { path.start_with?("/echo/") }
+#     request.status(ResponseCode::OK).text(request.path.sub("/echo/", "")).end
+#   else
+#     request.status(ResponseCode::NOT_FOUND).end
+#   end
+# end
 
-app.get "/" do |request|
-  request.status(ResponseCode::OK).text("Hello, world!")
-end
 
-app.start(3000)
+# PORT = 4221
+# socket = TCPServer.new('localhost', PORT)
+# puts "Listening on #{PORT}"
+
+
+# loop do
+#   conn = socket.accept
+
+#   begin
+#     data = conn.recv(MAX_BUFFER_SIZE).force_encoding("UTF-8")
+#     request = Request.new(data, conn)
+
+#     case request.method
+#     when RequestMethod::GET
+#       get(request)
+#     else
+#       Response.new(ResponseCode::METHOD_NOT_ALLOWED).send(conn)
+#     end
+#   rescue StandardError
+#     Response.new(ResponseCode::INTERNAL_SERVER_ERROR).send(conn)
+#   ensure
+#     conn.close
+#   end
+# end

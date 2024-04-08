@@ -110,6 +110,10 @@ class Response
     @body.set_content(text, ContentType::TEXT_PLAIN)
   end
 
+  def set_html(html)
+    @body.set_content(html, ContentType::TEXT_HTML)
+  end
+
   def set_code(code)
     @header = ResponseHeader.new(code)
   end

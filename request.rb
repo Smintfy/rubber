@@ -48,6 +48,11 @@ class Request
     self
   end
 
+  def html(html)
+    @response.set_html(html)
+    self
+  end
+
   # send the request
   def end
     @response.send(@conn)
